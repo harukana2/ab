@@ -1,0 +1,31 @@
+name: US Stock Scan
+
+on:
+  schedule:
+    # Runs at 13:30 UTC on weekdays = 22:30 JST (US market open, 9:30 ET
+    # during daylight saving time). Adjust for your preferred time —
+    # GitHub Actions cron is always in UTC. During US standard time (winter)
+    # this shifts to 23:30 JST for the same 9:30 ET open.
+    - cron: "30 13 * * 1-5"
+  workflow_dispatch: {}   # lets you trigger a run manually from the Actions tab
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run scanner and send email
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          GMAIL_TO: ${{ secrets.GMAIL_TO }}
+        run: python scanner.py
