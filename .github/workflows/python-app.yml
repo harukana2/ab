@@ -1,12 +1,14 @@
 name: US Stock Scan
 
 on:
-  schedule:
+  #schedule:
     # Runs at 13:30 UTC on weekdays = 22:30 JST (US market open, 9:30 ET
     # during daylight saving time). Adjust for your preferred time —
     # GitHub Actions cron is always in UTC. During US standard time (winter)
     # this shifts to 23:30 JST for the same 9:30 ET open.
-    - cron: "30 13 * * 1-5"
+    #- cron: "30 13 * * 1-5"
+  repository_dispatch:
+    types: [run-screener]
   workflow_dispatch: {}   # lets you trigger a run manually from the Actions tab
 
 jobs:
